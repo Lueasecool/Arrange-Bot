@@ -1,0 +1,125 @@
+root:
+    raw: "/remote-home/2332082/data/sgbot_dataset/raw"
+    file_path: "/remote-home/2332082/data/sgbot_dataset/train_scenes.txt"
+
+data:
+    dataset_type: "cached_threedfront"
+    encoding_type: "cached_diffusion_cosin_angle_objfeatsnorm_lat32_wocm" #"_no_prm"
+    dataset_directory: "/cluster/balrog/jtang/3d_front_processed/bedrooms_objfeats_32_64"
+    annotation_file: "../config/bedroom_threed_front_splits.csv"
+    path_to_invalid_scene_ids: "../config/invalid_threed_front_rooms.txt"
+    path_to_invalid_bbox_jids: "../config/black_list.txt"
+    augmentations: ["fixed_rotations"]
+    filter_fn: "threed_front_bedroom"
+    train_stats: "dataset_stats.txt"
+    room_layout_size: "64,64"
+
+network:
+    type: "diffusion_scene_layout_ddpm"
+    # denoising network
+    net_type: "unet1d"
+    translation_dim: 3
+    # concate squarewish layer
+    point_dim: 62
+    latent_dim: 0
+    room_mask_condition: false # not use room_mask 
+    sample_num_points: 12 # max_length 
+    size_dim: 3
+    objectness_dim: 1
+    class_dim: 6
+    angle_dim: 4
+    objfeat_dim: 0
+
+    # class condition
+    learnable_embedding: true
+    instance_condition: true
+    instance_emb_dim: 128
+    class_condition: false
+    class_emb_dim: 128
+
+    # room arrange condition
+    room_arrange_condition: False
+    arrange_emb_dim: 384
+
+    # diffusion config
+    diffusion_kwargs:
+        schedule_type: 'linear'
+        beta_start: 0.0001
+        beta_end: 0.02
+        time_num: 1000 
+        loss_type: 'mse'
+        model_mean_type: 'eps' #'x0' #'eps'
+        model_var_type: 'fixedsmall'
+        loss_separate: False
+        # calculate iou loss
+        loss_iou: False
+        #train_stats_file: "/cluster/balrog/jtang/3d_front_processed/bedrooms_objfeats/dataset_stats.txt"
+
+    net_kwargs:
+        dim: 64
+        dim_mults: [1, 1, 1, 1]
+        channels: 14 #29 --30 --94
+        objectness_dim: 0
+        class_dim: 22
+        angle_dim: 2
+        objfeat_dim: 32
+        self_condition: true
+        context_dim: 0
+        instanclass_dim: 512 #128 + 384
+        modulate_time_context_instanclass: true
+
+    denoiser_kwargs:
+        dims: 1 # 1D
+        in_channels: 10 # 8size(3)+loc(3)+qw(4)
+        out_channels: 10 # same
+        model_channels: 512
+        channel_mult: [ 1,1,1,1]
+        num_res_blocks: 2
+        attention_resolutions: [ 4, 2 ]
+        num_heads: 8
+        # cond_model params
+        use_spatial_transformer: true
+        transformer_depth: 1
+        conditioning_key: 'crossattn'
+        concat_dim: 1280
+        crossattn_dim: 1280
+        use_checkpoint: true
+
+feature_extractor:
+    name: "resnet18"
+    feature_size: 64
+    freeze_bn: true
+    input_channels: 1
+
+training:
+    splits: ["train", "val"]
+    epochs: 2000
+    steps_per_epoch: 500
+    batch_size: 64
+    save_frequency: 100
+    max_grad_norm: 10
+    # optimizer
+    optimizer: SGD
+    weight_decay: 0.0
+    # schedule
+    schedule: 'step'
+    lr: 0.0002
+    lr_step: 10000
+    lr_decay: 0.5
+
+validation:
+    splits: ["test"]
+    frequency: 10
+    batch_size: 128
+    gen_traj: false
+    num_step: 100
+    gen_gt: false
+    gen_prob_map: false
+
+logger:
+    type: "wandb"
+    project: "diffuscene"
+
+
+eval:
+    store_path: "/remote-home/2332082/data/sgbot_dataset/eval"
