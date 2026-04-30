@@ -1,0 +1,13 @@
+numpy
+tqdm
+pyyaml
+onnx
+opencv-python
+trimesh
+seaborn
+pyrender
+Pillow
+scipy
+open3d
+omegaconf
+einops
