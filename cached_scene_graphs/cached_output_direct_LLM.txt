@@ -1,0 +1,9 @@
+- Object relationships that should be present: 
+[plate standing on supporttable, fork left of plate, knife right of plate, cup front of knife]
+
+- The centroids and rotation of each object in a Python dictionary:
+  plate: [1.50, 1.00, 0.00]
+  fork: [1.35, 1.00, 0.00]
+  knife: [1.65, 1.00, 0.00]
+  cup: [1.65, 1.25, 0.00]
+  supporttable: [1.50, 1.00, 0.00]
