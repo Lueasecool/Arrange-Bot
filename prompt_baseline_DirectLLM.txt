@@ -1,0 +1,19 @@
+# Baseline - Direct LLM Layout Generation Prompt
+
+<Task Description> :
+The table presents a rectangular shape with dimensions measuring 3 units in length and 2 units in width. The coordinate system is centered at the front-left corner of the table, with the origin (0, 0) located at the front-left corner of the tabletop. Consequently, the position of any object specified by the coordinates (x, y, \theta) must fall within the range: 0 < x < 3 along the length, 0 < y < 2 along the width, and \theta in radian. Your task is to propose an orderly functional object arrangement according to the user's instruction. We have the following list of objects: plate, knife, fork, spoon, cup, supporttable. 
+
+The objects have the following shapes in (l, w):
+plate: (0.21, 0.21)
+cup: (0.07, 0.07)
+knife: (0.04, 0.20)
+fork: (0.04, 0.18)
+
+<User Instruction> :
+Could you please set up a dining table for me? To propose the tidy arrangements, strictly follow the following structure:
+
+- Object relationships that should be present: [List the tidy object relationships here]
+- The centroids and rotation of each object in a Python dictionary:
+  object_name_1: [x_1, y_1, \theta_1]
+  object_name_2: [x_2, y_2, \theta_2]
+  ......
