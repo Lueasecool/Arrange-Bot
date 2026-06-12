@@ -1,0 +1,10 @@
+{
+    "relationships": [
+      [30, 117, 6, "standing on"],
+      [6, 30, 1, "left"],
+      [8, 30, 2, "right"],
+      [6, 30, 9, "symmetrical to"],
+      [12, 8, 4, "front"],
+      [5, 117, 6, "standing on"]
+    ]
+  }
